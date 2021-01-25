@@ -3,11 +3,13 @@ const express = require('express');
 const app = express();
 const mongoose=require('mongoose');
 const Blog=require('./models/blogs')
-
+require('dotenv/config');
 //connect to mongo
-const dbURL="mongodb+srv://pramod:pramod123@cluster0.2gpmm.mongodb.net/node-tuts?retryWrites=true&w=majority";
-mongoose.connect(dbURL,{ useNewUrlParser: true,useUnifiedTopology: true })
-  .then((result) =>app.listen(3000))
+// const dbURL="";
+mongoose.connect(process.env.db_connection,{ useNewUrlParser: true,useUnifiedTopology: true })
+  .then((result) =>{app.listen(3000)
+console.log('db connected');
+})
   .catch((err) => console.log(err))
 
 app.set('view engine','ejs')
@@ -51,7 +53,7 @@ app.get('/blogs/:id',(req,res) => {
           .then(result => {
               res.render('details',{blog:result,title:"Blog details"})
           })
-          .catch(err => {console.log(err);})
+          .catch(err => res.status(404).render('404', { title: '404' }))
 })
 app.delete('/blogs/:id',(req,res) => {
     const id=req.params.id;
